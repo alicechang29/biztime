@@ -6,8 +6,6 @@ import { BadRequestError, NotFoundError } from "../expressError.js";
 
 const router = express.Router();
 
-//FIXME: throw an error when company doesn't exist
-//FIXME: throw an error when json body is not properly given
 
 /** GET / - returns `{companies: [{code, name}, ...]}` */
 router.get("",
@@ -15,12 +13,15 @@ router.get("",
 
     const results = await db.query(
       `SELECT code, name
-       FROM companies`);
+        FROM companies
+        ORDER BY code`);
     const companies = results.rows;
+
     return res.json({ companies });
   });
 
 /** GET /[code] - return data about one company:
+ * input: code
  * `{company: {code, name, description}}` */
 
 router.get("/:code",
@@ -39,8 +40,9 @@ router.get("/:code",
 
   });
 
-/** POST - add a company to the database:
- * `{company: {code, name, description}}` */
+/** POST - add a company to the database
+ *Input: code, name, description into json body
+ *Output:  `{company: {code, name, description}}` */
 
 router.post('', async function (req, res, next) {
 
@@ -55,16 +57,18 @@ router.post('', async function (req, res, next) {
   const { code, name, description } = req.body;
   const result = await db.query(
     `INSERT INTO companies (code, name, description)
-     VALUES ($1, $2, $3) RETURNING code, name, description`,
+      VALUES ($1, $2, $3)
+      RETURNING code, name, description`,
     [code, name, description]
   );
-
   const newCompany = result.rows[0];
+
   return res.status(201).json({ company: newCompany });
 });
 
 /** PUT /[code] - update a company to the database:
- * `{company: {code, name, description}}` */
+ * Input: code
+ * Output: `{company: {code, name, description}}` */
 
 router.put('/:code', async function (req, res, next) {
 
@@ -81,18 +85,20 @@ router.put('/:code', async function (req, res, next) {
 
   const result = await db.query(
     `UPDATE companies
-     SET name=$1, description=$2
-     WHERE code = $3 RETURNING code, name, description`,
+      SET name=$1, description=$2
+      WHERE code = $3 RETURNING code, name, description`,
     [name, description, code]
   );
-
   const changedCompany = result.rows[0];
+
   if (!changedCompany) throw new NotFoundError(`No matching company: ${code}`);
 
   return res.json({ company: changedCompany });
 });
 
-/** Delete company, returning {status: "deleted"} */
+/** Delete company,
+ * input company "code"
+ * returning {status: "deleted"} */
 
 router.delete("/:code", async function (req, res, next) {
 
