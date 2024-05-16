@@ -1,2 +1,155 @@
-{"_type":"export","__export_format":4,"__export_date":"2024-05-16T19:06:36.628Z","__export_source":"insomnia.desktop.app:v9.1.1","resources":[{"_id":"req_9e32ef7d5359487d8820f64d8971d90d","parentId":"wrk_2e2175b952dd417cbd5a7fcbbb2225e4","modified":1715885754737,"created":1715885745191,"url":"http://localhost:3000/companies","name":"Get all companies","description":"","method":"GET","body":{},"preRequestScript":"","parameters":[],"headers":[{"name":"User-Agent","value":"insomnia/9.1.1"}],"authentication":{},"metaSortKey":-1715885745191,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"wrk_2e2175b952dd417cbd5a7fcbbb2225e4","parentId":null,"modified":1715885716852,"created":1715885716852,"name":"Biztime - Express/Postgres","description":"","scope":"collection","_type":"workspace"},{"_id":"req_8f91411ef52a4f0d894448c418890d1f","parentId":"wrk_2e2175b952dd417cbd5a7fcbbb2225e4","modified":1715886294322,"created":1715886211521,"url":"http://localhost:3000/companies/apple","name":"Get a single company","description":"","method":"GET","body":{"mimeType":"application/json","text":""},"preRequestScript":"","parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.1.1"}],"authentication":{},"metaSortKey":-1715852852899,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"env_6e450b6c8f53e479e121545dcfb986644d7b31a4","parentId":"wrk_2e2175b952dd417cbd5a7fcbbb2225e4","modified":1715885716856,"created":1715885716856,"name":"Base Environment","data":{},"dataPropertyOrder":null,"color":null,"isPrivate":false,"metaSortKey":1715885716856,"_type":"environment"},{"_id":"jar_6e450b6c8f53e479e121545dcfb986644d7b31a4","parentId":"wrk_2e2175b952dd417cbd5a7fcbbb2225e4","modified":1715885716857,"created":1715885716857,"name":"Default Jar","cookies":[],"_type":"cookie_jar"}]}
-{"_type":"export","__export_format":4,"__export_date":"2024-05-16T19:36:15.121Z","__export_source":"insomnia.desktop.app:v9.2.0","resources":[{"_id":"req_f4432edf0de344a5b3ddad014aab3d41","parentId":"wrk_7650aa2179084356985ed9eeb402f3d5","modified":1715888157793,"created":1715888118957,"url":"http://localhost:3000/companies/dell","name":"Add company","description":"","method":"POST","body":{"mimeType":"application/json","text":"{\n\t\"code\": \"dell\",\n\t\"name\": \"Dell\",\n\t\"description\": \"trash computers\"\n}"},"preRequestScript":"","parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.2.0"}],"authentication":{},"metaSortKey":-1715888118957,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"wrk_7650aa2179084356985ed9eeb402f3d5","parentId":null,"modified":1715886387465,"created":1715886387465,"name":"Biztime","description":"","scope":"collection","_type":"workspace"},{"_id":"req_ca4565db6fbf453b9d49a85694f90507","parentId":"wrk_7650aa2179084356985ed9eeb402f3d5","modified":1715888116512,"created":1715887116624,"url":"http://localhost:3000/companies/dell","name":"Change company data","description":"","method":"PUT","body":{"mimeType":"application/json","text":"{\n\t\"code\": \"dell\",\n\t\"name\": \"Dell\",\n\t\"description\": \"really trash computers\"\n}"},"preRequestScript":"","parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.2.0"}],"authentication":{},"metaSortKey":-1715887116624,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"env_f708692b1cb79d7d573283641138aace7f40cb36","parentId":"wrk_7650aa2179084356985ed9eeb402f3d5","modified":1715886387468,"created":1715886387468,"name":"Base Environment","data":{},"dataPropertyOrder":null,"color":null,"isPrivate":false,"metaSortKey":1715886387468,"_type":"environment"},{"_id":"jar_f708692b1cb79d7d573283641138aace7f40cb36","parentId":"wrk_7650aa2179084356985ed9eeb402f3d5","modified":1715886387470,"created":1715886387470,"name":"Default Jar","cookies":[],"_type":"cookie_jar"}]}
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2024-05-16T21:11:35.194Z",
+  "__export_source": "insomnia.desktop.app:v9.2.0",
+  "resources": [
+    {
+      "_id": "req_f4432edf0de344a5b3ddad014aab3d41",
+      "parentId": "wrk_7650aa2179084356985ed9eeb402f3d5",
+      "modified": 1715888157793,
+      "created": 1715888118957,
+      "url": "http://localhost:3000/companies/dell",
+      "name": "Add company",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"code\": \"dell\",\n\t\"name\": \"Dell\",\n\t\"description\": \"trash computers\"\n}"
+      },
+      "preRequestScript": "",
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "User-Agent", "value": "insomnia/9.2.0" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1715888118957,
+      "isPrivate": false,
+      "pathParameters": [],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "wrk_7650aa2179084356985ed9eeb402f3d5",
+      "parentId": null,
+      "modified": 1715886387465,
+      "created": 1715886387465,
+      "name": "Biztime",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_ca4565db6fbf453b9d49a85694f90507",
+      "parentId": "wrk_7650aa2179084356985ed9eeb402f3d5",
+      "modified": 1715888116512,
+      "created": 1715887116624,
+      "url": "http://localhost:3000/companies/dell",
+      "name": "Change company data",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"code\": \"dell\",\n\t\"name\": \"Dell\",\n\t\"description\": \"really trash computers\"\n}"
+      },
+      "preRequestScript": "",
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "User-Agent", "value": "insomnia/9.2.0" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1715887116624,
+      "isPrivate": false,
+      "pathParameters": [],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_8e8809146ede46cf8af1963b86fe2d09",
+      "parentId": "wrk_7650aa2179084356985ed9eeb402f3d5",
+      "modified": 1715885754737,
+      "created": 1715885745191,
+      "url": "http://localhost:3000/companies",
+      "name": "Get all companies",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "preRequestScript": "",
+      "parameters": [],
+      "headers": [{ "name": "User-Agent", "value": "insomnia/9.1.1" }],
+      "authentication": {},
+      "metaSortKey": -1715885745191,
+      "isPrivate": false,
+      "pathParameters": [],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_c0c94fe312884402b2d56a9761e1fe96",
+      "parentId": "wrk_7650aa2179084356985ed9eeb402f3d5",
+      "modified": 1715886294322,
+      "created": 1715886211521,
+      "url": "http://localhost:3000/companies/apple",
+      "name": "Get a single company",
+      "description": "",
+      "method": "GET",
+      "body": { "mimeType": "application/json", "text": "" },
+      "preRequestScript": "",
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "User-Agent", "value": "insomnia/9.1.1" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1715852852899,
+      "isPrivate": false,
+      "pathParameters": [],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_f708692b1cb79d7d573283641138aace7f40cb36",
+      "parentId": "wrk_7650aa2179084356985ed9eeb402f3d5",
+      "modified": 1715886387468,
+      "created": 1715886387468,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1715886387468,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_f708692b1cb79d7d573283641138aace7f40cb36",
+      "parentId": "wrk_7650aa2179084356985ed9eeb402f3d5",
+      "modified": 1715886387470,
+      "created": 1715886387470,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    }
+  ]
+}
