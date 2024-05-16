@@ -1,10 +1,10 @@
-/** Routes for companies of biztime. */
+/** Routes for invoices of biztime. */
 
 import express from "express";
 import db from "../db.js";
 import { BadRequestError, NotFoundError } from "../expressError.js";
 
-const invoiceRouter = express.Router();
+const invoiceRouter = express.Router(); //TODO: don't need to call it invoiceRouter, can be called "router"
 
 
 /** GET / - returns `{invoices: [{id, comp_name}, ...]}` */
@@ -30,6 +30,7 @@ invoiceRouter.get("/:id",
   async function (req, res, next) {
     const id = req.params.id;
 
+    //FIXME: use a JOIN Instead - getting 1 invoice, and it would only ever have 1 company vs 1 to many
     const invoiceResults = await db.query(
       `SELECT id, amt, paid, add_date, paid_date, comp_code
         FROM invoices
@@ -61,7 +62,8 @@ invoiceRouter.post('', async function (req, res, next) {
   if (
     !req.body ||
     req.body.comp_code === undefined ||
-    req.body.amt === undefined) {
+    req.body.amt === undefined ||
+    isNaN(Number(req.body.amt))) {
     throw new BadRequestError();
   }
 
@@ -82,6 +84,7 @@ invoiceRouter.post('', async function (req, res, next) {
     [comp_code, amt]
   );
   const invoice = result.rows[0];
+  //TODO: can check the error.message to catch that error without having to write a query to search for company
 
   return res.status(201).json({ invoice });
 });
@@ -94,7 +97,8 @@ invoiceRouter.put('/:id', async function (req, res, next) {
 
   if (
     !req.body ||
-    req.body.amt === undefined) {
+    req.body.amt === undefined ||
+    isNaN(Number(req.body.amt))) {
     throw new BadRequestError();
   }
 
@@ -129,8 +133,8 @@ invoiceRouter.delete("/:id", async function (req, res, next) {
       RETURNING id`,
     [id],
   );
-  const deletedInvoice = result.rows[0];
-  if (!deletedInvoice) throw new NotFoundError(`No matching invoice: #${id}`);
+  const invoice = result.rows[0];
+  if (!invoice) throw new NotFoundError(`No matching invoice: #${id}`);
 
   return res.json({ message: "deleted" });
 });
