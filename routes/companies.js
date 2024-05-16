@@ -6,6 +6,9 @@ import { BadRequestError, NotFoundError } from "../expressError.js";
 
 const router = express.Router();
 
+//FIXME: throw an error when company doesn't exist
+//FIXME: throw an error when json body is not properly given
+
 /** GET / - returns `{companies: [{code, name}, ...]}` */
 router.get("",
   async function (req, res, next) {
@@ -29,14 +32,26 @@ router.get("/:code",
        FROM companies
        WHERE code = $1`, [code]);
     const company = results.rows[0];
+
+    if (!company) throw new NotFoundError(`No matching company: ${code}`);
+
     return res.json({ company });
+
   });
 
 /** POST - add a company to the database:
  * `{company: {code, name, description}}` */
 
 router.post('', async function (req, res, next) {
-  if (req.body === undefined) throw new BadRequestError();
+
+  if (
+    !req.body ||
+    req.body.code === undefined ||
+    req.body.name === undefined ||
+    req.body.description === undefined) {
+    throw new BadRequestError();
+  }
+
   const { code, name, description } = req.body;
   const result = await db.query(
     `INSERT INTO companies (code, name, description)
@@ -52,7 +67,14 @@ router.post('', async function (req, res, next) {
  * `{company: {code, name, description}}` */
 
 router.put('/:code', async function (req, res, next) {
-  if (req.body === undefined) throw new BadRequestError();
+
+  if (
+    !req.body ||
+    req.body.code === undefined ||
+    req.body.name === undefined ||
+    req.body.description === undefined) {
+    throw new BadRequestError();
+  }
 
   const code = req.params.code;
   const { name, description } = req.body;
@@ -77,11 +99,11 @@ router.delete("/:code", async function (req, res, next) {
   const code = req.params.code;
 
   const result = await db.query(
-    "DELETE FROM companies WHERE code = $1",
+    `DELETE FROM companies WHERE code = $1 RETURNING code, name, description`,
     [code],
   );
-
-  if (!code) throw new NotFoundError(`No matching company: ${code}`);
+  const deletedCompany = result.rows[0];
+  if (!deletedCompany) throw new NotFoundError(`No matching company: ${code}`);
 
   return res.json({ message: "Deleted" });
 });
