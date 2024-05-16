@@ -32,17 +32,18 @@ invoiceRouter.get("/:id",
 
     const invoiceResults = await db.query(
       `SELECT id, amt, paid, add_date, paid_date, comp_code
-       FROM invoices
-       WHERE id = $1`, [id]);
+        FROM invoices
+        WHERE id = $1`, [id]);
     const invoice = invoiceResults.rows[0];
-    const companyCode = invoice.comp_code;
 
-    if (!invoice) throw new NotFoundError(`No matching company: ${code}`);
+    if (!invoice) throw new NotFoundError(`No matching invoice: #${id}`);
+
+    const companyCode = invoice.comp_code;
 
     const companyResults = await db.query(
       `SELECT code, name, description
-       FROM companies
-       WHERE code = $1`, [companyCode]);
+        FROM companies
+        WHERE code = $1`, [companyCode]);
 
     const company = companyResults.rows[0];
     delete invoice.comp_code;
@@ -89,50 +90,49 @@ invoiceRouter.post('', async function (req, res, next) {
  * Input: code
  * Output: `{company: {code, name, description}}` */
 
-invoiceRouter.put('/:code', async function (req, res, next) {
+invoiceRouter.put('/:id', async function (req, res, next) {
 
   if (
     !req.body ||
-    req.body.code === undefined ||
-    req.body.name === undefined ||
-    req.body.description === undefined) {
+    req.body.amt === undefined) {
     throw new BadRequestError();
   }
 
-  const code = req.params.code;
-  const { name, description } = req.body;
+  const id = req.params.id;
+  const { amt } = req.body;
 
   const result = await db.query(
-    `UPDATE companies
-      SET name=$1, description=$2
-      WHERE code = $3 RETURNING code, name, description`,
-    [name, description, code]
+    `UPDATE invoices
+      SET amt = $1
+      WHERE id = $2
+      RETURNING id, comp_code, amt, paid, add_date, paid_date`,
+    [amt, id]
   );
-  const changedCompany = result.rows[0];
+  const invoice = result.rows[0];
 
-  if (!changedCompany) throw new NotFoundError(`No matching company: ${code}`);
+  if (!invoice) throw new NotFoundError(`No matching invoice: #${id}`);
 
-  return res.json({ company: changedCompany });
+  return res.json({ invoice });
 });
 
-/** Delete company,
- * input company "code"
+/** Delete invoice,
+ * input invoice id
  * returning {status: "deleted"} */
 
-invoiceRouter.delete("/:code", async function (req, res, next) {
+invoiceRouter.delete("/:id", async function (req, res, next) {
 
-  const code = req.params.code;
+  const id = req.params.id;
 
   const result = await db.query(
-    `DELETE FROM companies
-      WHERE code = $1
-      RETURNING code, name, description`,
-    [code],
+    `DELETE FROM invoices
+      WHERE id = $1
+      RETURNING id`,
+    [id],
   );
-  const deletedCompany = result.rows[0];
-  if (!deletedCompany) throw new NotFoundError(`No matching company: ${code}`);
+  const deletedInvoice = result.rows[0];
+  if (!deletedInvoice) throw new NotFoundError(`No matching invoice: #${id}`);
 
-  return res.json({ message: "Deleted" });
+  return res.json({ message: "deleted" });
 });
 
 export default invoiceRouter;

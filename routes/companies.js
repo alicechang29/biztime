@@ -22,7 +22,7 @@ companyRouter.get("",
 
 /** GET /[code] - return data about one company:
  * input: code
- * `{company: {code, name, description}}` */
+ * `{company: {code, name, description, invoices}}` */
 
 companyRouter.get("/:code",
   async function (req, res, next) {
@@ -35,6 +35,13 @@ companyRouter.get("/:code",
     const company = results.rows[0];
 
     if (!company) throw new NotFoundError(`No matching company: ${code}`);
+
+    const invoices = await db.query(
+      `SELECT id
+        FROM invoices
+        WHERE invoices.comp_code = $1`, [code]);
+
+    company.invoices = invoices.rows.map(invoice => invoice.id);
 
     return res.json({ company });
 
