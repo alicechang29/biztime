@@ -4,11 +4,11 @@ import express from "express";
 import db from "../db.js";
 import { BadRequestError, NotFoundError } from "../expressError.js";
 
-const router = express.Router();
+const companyRouter = express.Router();
 
 
 /** GET / - returns `{companies: [{code, name}, ...]}` */
-router.get("",
+companyRouter.get("",
   async function (req, res, next) {
 
     const results = await db.query(
@@ -24,7 +24,7 @@ router.get("",
  * input: code
  * `{company: {code, name, description}}` */
 
-router.get("/:code",
+companyRouter.get("/:code",
   async function (req, res, next) {
     const code = req.params.code;
 
@@ -44,7 +44,7 @@ router.get("/:code",
  *Input: code, name, description into json body
  *Output:  `{company: {code, name, description}}` */
 
-router.post('', async function (req, res, next) {
+companyRouter.post('', async function (req, res, next) {
 
   if (
     !req.body ||
@@ -70,7 +70,7 @@ router.post('', async function (req, res, next) {
  * Input: code
  * Output: `{company: {code, name, description}}` */
 
-router.put('/:code', async function (req, res, next) {
+companyRouter.put('/:code', async function (req, res, next) {
 
   if (
     !req.body ||
@@ -100,12 +100,14 @@ router.put('/:code', async function (req, res, next) {
  * input company "code"
  * returning {status: "deleted"} */
 
-router.delete("/:code", async function (req, res, next) {
+companyRouter.delete("/:code", async function (req, res, next) {
 
   const code = req.params.code;
 
   const result = await db.query(
-    `DELETE FROM companies WHERE code = $1 RETURNING code, name, description`,
+    `DELETE FROM companies
+      WHERE code = $1
+      RETURNING code, name, description`,
     [code],
   );
   const deletedCompany = result.rows[0];
@@ -114,4 +116,4 @@ router.delete("/:code", async function (req, res, next) {
   return res.json({ message: "Deleted" });
 });
 
-export default router;
+export default companyRouter;

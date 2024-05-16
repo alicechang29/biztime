@@ -2,12 +2,15 @@
 
 import express from "express";
 import { NotFoundError } from "./expressError.js";
-import router from "./routes/companies.js";
+import companyRouter from "./routes/companies.js";
+import invoiceRouter from "./routes/invoices.js";
 
 const app = express();
 
 app.use(express.json());
-app.use("/companies", router);
+
+app.use("/companies", companyRouter);
+app.use("/invoices", invoiceRouter);
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
 app.use(function (req, res, next) {
