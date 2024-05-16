@@ -2,7 +2,7 @@
 
 import express from "express";
 import db from "../db.js";
-import { BadRequestError } from "../expressError.js";
+import { BadRequestError, NotFoundError } from "../expressError.js";
 
 const router = express.Router();
 
@@ -32,6 +32,8 @@ router.get("/:code",
     return res.json({ company });
   });
 
+/** POST - add a company to the database:
+ * `{company: {code, name, description}}` */
 
 router.post('', async function (req, res, next) {
   if (req.body === undefined) throw new BadRequestError();
@@ -45,6 +47,9 @@ router.post('', async function (req, res, next) {
   const newCompany = result.rows[0];
   return res.status(201).json({ company: newCompany });
 });
+
+/** PUT /[code] - update a company to the database:
+ * `{company: {code, name, description}}` */
 
 router.put('/:code', async function (req, res, next) {
   if (req.body === undefined) throw new BadRequestError();
@@ -63,6 +68,22 @@ router.put('/:code', async function (req, res, next) {
   if (!changedCompany) throw new NotFoundError(`No matching company: ${code}`);
 
   return res.json({ company: changedCompany });
+});
+
+/** Delete company, returning {status: "deleted"} */
+
+router.delete("/:code", async function (req, res, next) {
+
+  const code = req.params.code;
+
+  const result = await db.query(
+    "DELETE FROM companies WHERE code = $1",
+    [code],
+  );
+
+  if (!code) throw new NotFoundError(`No matching company: ${code}`);
+
+  return res.json({ message: "Deleted" });
 });
 
 export default router;
