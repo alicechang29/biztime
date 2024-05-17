@@ -5,6 +5,8 @@ import { NotFoundError } from "./expressError.js";
 import companyRouter from "./routes/companies.js";
 import invoiceRouter from "./routes/invoices.js";
 
+
+
 const app = express();
 
 app.use(express.json());
