@@ -2,7 +2,7 @@
 
 import express from "express";
 import db from "../db.js";
-import { BadRequestError, NotFoundError } from "../expressError.js";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "../expressError.js";
 
 const companyRouter = express.Router();
 
@@ -62,15 +62,28 @@ companyRouter.post('', async function (req, res, next) {
   }
 
   const { code, name, description } = req.body;
-  const result = await db.query(
-    `INSERT INTO companies (code, name, description)
-      VALUES ($1, $2, $3)
-      RETURNING code, name, description`,
-    [code, name, description]
-  );
-  const newCompany = result.rows[0];
+  try {
+    const result = await db.query(
+      `INSERT INTO companies (code, name, description)
+        VALUES ($1, $2, $3)
+        RETURNING code, name, description`,
+      [code, name, description]
+    );
 
-  return res.status(201).json({ company: newCompany });
+    const newCompany = result.rows[0];
+
+    return res.status(201).json({ company: newCompany });
+
+  } catch (err) {
+
+    if (err.detail.includes("already exists")) {
+      throw new UnauthorizedError();
+    }
+
+  }
+
+
+
 });
 
 /** PUT /[code] - update a company to the database:
@@ -81,7 +94,7 @@ companyRouter.put('/:code', async function (req, res, next) {
 
   if (
     !req.body ||
-    req.body.code === undefined ||
+    req.body.code === undefined || //FIXME: not needed here bc only a url variable
     req.body.name === undefined ||
     req.body.description === undefined) {
     throw new BadRequestError();
