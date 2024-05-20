@@ -4,11 +4,11 @@ import express from "express";
 import db from "../db.js";
 import { BadRequestError, NotFoundError } from "../expressError.js";
 
-const invoiceRouter = express.Router(); //TODO: don't need to call it invoiceRouter, can be called "router"
+const invoices = express.Router();
 
 
 /** GET / - returns `{invoices: [{id, comp_name}, ...]}` */
-invoiceRouter.get("",
+invoices.get("",
   async function (req, res, next) {
 
     const results = await db.query(
@@ -26,29 +26,39 @@ invoiceRouter.get("",
  * `{invoice: {id, amt, paid, add_date, paid_date, company: {code, name, description}}`
  * */
 
-invoiceRouter.get("/:id",
+invoices.get("/:id",
   async function (req, res, next) {
     const id = req.params.id;
 
-    //FIXME: use a JOIN Instead - getting 1 invoice, and it would only ever have 1 company vs 1 to many
-    const invoiceResults = await db.query(
-      `SELECT id, amt, paid, add_date, paid_date, comp_code
-        FROM invoices
+    const results = await db.query(
+      `SELECT i.id,
+                i.amt,
+                i.paid,
+                i.add_date,
+                i.paid_date,
+                i.comp_code,
+                c.name.
+                c.description
+        FROM invoices i
+                JOIN companies c
+                  ON i.comp_code = c.code
         WHERE id = $1`, [id]);
-    const invoice = invoiceResults.rows[0];
 
-    if (!invoice) throw new NotFoundError(`No matching invoice: #${id}`);
+    const data = results.rows[0];
 
-    const companyCode = invoice.comp_code;
+    if (!data) throw new NotFoundError(`No matching invoice: #${id}`);
 
-    const companyResults = await db.query(
-      `SELECT code, name, description
-        FROM companies
-        WHERE code = $1`, [companyCode]);
-
-    const company = companyResults.rows[0];
-    delete invoice.comp_code;
-    invoice.company = company;
+    const invoice = {
+      id: data.id,
+      amt: data.amt,
+      paid: data.paid,
+      add_date: data.add_date,
+      paid_date: data.paid_date,
+      company: {
+        name: data.name,
+        description: data.description
+      }
+    };
 
     return res.json({ invoice });
   });
@@ -57,7 +67,7 @@ invoiceRouter.get("/:id",
  *Input: comp_code, amt into json body
  *Output:  `{invoice: {id, comp_code, amt, paid, add_date, paid_date}}` */
 
-invoiceRouter.post('', async function (req, res, next) {
+invoices.post('', async function (req, res, next) {
 
   if (
     !req.body ||
@@ -93,7 +103,7 @@ invoiceRouter.post('', async function (req, res, next) {
  * Input: code
  * Output: `{company: {code, name, description}}` */
 
-invoiceRouter.put('/:id', async function (req, res, next) {
+invoices.put('/:id', async function (req, res, next) {
 
   if (
     !req.body ||
@@ -123,7 +133,7 @@ invoiceRouter.put('/:id', async function (req, res, next) {
  * input invoice id
  * returning {status: "deleted"} */
 
-invoiceRouter.delete("/:id", async function (req, res, next) {
+invoices.delete("/:id", async function (req, res, next) {
 
   const id = req.params.id;
 
@@ -139,4 +149,4 @@ invoiceRouter.delete("/:id", async function (req, res, next) {
   return res.json({ message: "deleted" });
 });
 
-export default invoiceRouter;
+export default invoices;
