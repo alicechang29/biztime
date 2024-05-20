@@ -133,7 +133,7 @@ companies.delete("/:code", async function (req, res, next) {
   const deletedCompany = result.rows[0];
   if (!deletedCompany) throw new NotFoundError(`No matching company: ${code}`);
 
-  return res.json({ message: "Deleted" });
+  return res.json({ status: "deleted" });
 });
 
 export default companies;
