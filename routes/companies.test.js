@@ -113,7 +113,7 @@ describe('POST /companies', function () {
 
   });
 
-  test('Returns 404 if attempting to create already existing company', async function () {
+  test('Returns 401 if attempting to create already existing company', async function () {
     const duplicateCompany = {
       code: 'test_code',
       name: 'test_name',
@@ -130,7 +130,7 @@ describe('POST /companies', function () {
 
 });
 
-describe('PUT /companies', function () {
+describe('PUT /:id', function () {
   test('Successfully updates a single company', async function () {
 
     const updateCompany = {
@@ -147,14 +147,40 @@ describe('PUT /companies', function () {
     expect(resp.body).toEqual({ "company": updateCompany });
   });
 
-  test('Fails to update a single company', async function () {
-    const resp = await request(app).post('/companies/test_code2');
+  test('Returns 404 for empty missing data', async function () {
+    const resp = await request(app)
+      .post('/companies/test_code2')
+      .send({});
+
+    expect(resp.statusCode).toEqual(404);
+
+  });
+
+  test('Returns 404 for empty request body', async function () {
+    const resp = await request(app)
+      .post('/companies/test_code2')
+      .send();
 
     expect(resp.statusCode).toEqual(404);
 
   });
 
 });
+
+describe('DELETE /:id', function () {
+  test('Successfully deleting a single company', async function () {
+    const resp = await request(app).delete("/companies/test_code");
+    expect(resp.body).toEqual({ status: "deleted" });
+  });
+
+  test("Return 404 for non-existent company", async function () {
+    const resp = await request(app).delete("/companies/poo");
+    expect(resp.status).toEqual(404);
+  });
+
+});
+
+
 
 
 
