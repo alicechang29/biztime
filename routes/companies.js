@@ -4,11 +4,11 @@ import express from "express";
 import db from "../db.js";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "../expressError.js";
 
-const companyRouter = express.Router();
+const companies = express.Router();
 
 
 /** GET / - returns `{companies: [{code, name}, ...]}` */
-companyRouter.get("",
+companies.get("",
   async function (req, res, next) {
 
     const results = await db.query(
@@ -24,7 +24,7 @@ companyRouter.get("",
  * input: code
  * `{company: {code, name, description, invoices}}` */
 
-companyRouter.get("/:code",
+companies.get("/:code",
   async function (req, res, next) {
     const code = req.params.code;
 
@@ -51,7 +51,7 @@ companyRouter.get("/:code",
  *Input: code, name, description into json body
  *Output:  `{company: {code, name, description}}` */
 
-companyRouter.post('', async function (req, res, next) {
+companies.post('', async function (req, res, next) {
 
   if (
     !req.body ||
@@ -90,11 +90,10 @@ companyRouter.post('', async function (req, res, next) {
  * Input: code
  * Output: `{company: {code, name, description}}` */
 
-companyRouter.put('/:code', async function (req, res, next) {
+companies.put('/:code', async function (req, res, next) {
 
   if (
     !req.body ||
-    req.body.code === undefined || //FIXME: not needed here bc only a url variable
     req.body.name === undefined ||
     req.body.description === undefined) {
     throw new BadRequestError();
@@ -106,7 +105,8 @@ companyRouter.put('/:code', async function (req, res, next) {
   const result = await db.query(
     `UPDATE companies
       SET name=$1, description=$2
-      WHERE code = $3 RETURNING code, name, description`,
+      WHERE code = $3
+      RETURNING code, name, description`,
     [name, description, code]
   );
   const changedCompany = result.rows[0];
@@ -120,7 +120,7 @@ companyRouter.put('/:code', async function (req, res, next) {
  * input company "code"
  * returning {status: "deleted"} */
 
-companyRouter.delete("/:code", async function (req, res, next) {
+companies.delete("/:code", async function (req, res, next) {
 
   const code = req.params.code;
 
@@ -136,4 +136,4 @@ companyRouter.delete("/:code", async function (req, res, next) {
   return res.json({ message: "Deleted" });
 });
 
-export default companyRouter;
+export default companies;
