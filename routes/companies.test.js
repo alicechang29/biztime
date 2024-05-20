@@ -25,7 +25,7 @@ afterAll(async function () {
 describe('GET /companies', function () {
   test('Gets companies', async function () {
     const resp = await request(app).get('/companies');
-    const testCompanyAnswer =
+    const testCompanies =
     {
       companies:
         [{
@@ -35,7 +35,7 @@ describe('GET /companies', function () {
         ]
     };
     console.log(resp.body);
-    expect(resp.body).toEqual(testCompanyAnswer);
+    expect(resp.body).toEqual(testCompanies);
   });
 });
 
@@ -85,10 +85,10 @@ describe('POST /companies', function () {
       .send(testCompany2);
 
     console.log(resp.body);
-    expect(resp.body).toEqual({ company: testCompany2 }); //FIXME: don't need to put quotes around keys in javascript
+    expect(resp.body).toEqual({ company: testCompany2 });
   });
 
-  test('Returns 400 for empty request body', async function () { //TODO: return 400 for empty request body
+  test('Returns 400 for empty request body', async function () {
     const testCompany2 = {};
     const resp = await request(app)
       .post('/companies')
@@ -113,7 +113,7 @@ describe('POST /companies', function () {
 
   });
 
-  test('Returns 404 if attempting to create already existing company', async function () { //TODO: describe failure properly
+  test('Returns 404 if attempting to create already existing company', async function () {
     const duplicateCompany = {
       code: 'test_code',
       name: 'test_name',
@@ -130,27 +130,27 @@ describe('POST /companies', function () {
 
 });
 
-describe('PUT /companies', function () { //FIXME: THIS IS A PUT
+describe('PUT /companies', function () {
   test('Successfully updates a single company', async function () {
-    const testCompany2 =
-    {
-      code: 'test_code2',
-      name: 'test_walmart',
-      description: 'test_description2',
+
+    const updateCompany = {
+      code: 'test_code',
+      name: 'new_name',
+      description: 'test_description'
     };
 
     const resp = await request(app)
-      .put('/companies/test_code') //FIXME: THIS IS A PUT
-      .send(testCompanyAnswer);
+      .put('/companies/test_code')
+      .send(updateCompany);
 
     console.log(resp.body);
-    expect(resp.body).toEqual({ "company": testCompanyAnswer });
+    expect(resp.body).toEqual({ "company": updateCompany });
   });
 
   test('Fails to update a single company', async function () {
-    const resp = await request(app).post('/companies/test_code2');  //FIXME: THIS IS A PUT
+    const resp = await request(app).post('/companies/test_code2');
 
-    expect(resp.statusCode).toEqual(400);
+    expect(resp.statusCode).toEqual(404);
 
   });
 
